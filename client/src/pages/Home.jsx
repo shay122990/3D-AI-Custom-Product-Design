@@ -7,6 +7,7 @@ import {
   slideAnimation,
 } from "../config/motion";
 import state from "../store/index";
+import { CustomButton } from "../components";
 
 const Home = () => {
   const snap = useSnapshot(state);
@@ -37,6 +38,12 @@ const Home = () => {
                 customization tool. <strong>Unleash your imagination</strong>{" "}
                 and define your own style.
               </p>
+              <CustomButton
+                type="filled"
+                title="Customize It"
+                handleClick={() => (state.intro = false)}
+                customStyle="w-fit px-4 py-2.5 font-bold text-sm"
+              />
             </motion.div>
           </motion.div>
         </motion.section>
