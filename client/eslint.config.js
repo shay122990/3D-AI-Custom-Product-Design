@@ -3,6 +3,7 @@ import globals from "globals";
 import react from "eslint-plugin-react";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
+import { geometry } from "maath";
 
 export default [
   { ignores: ["dist"] },
@@ -31,6 +32,22 @@ export default [
       "react/jsx-no-target-blank": "off",
       "react/prop-types": "off",
       "no-unused-vars": "off",
+      "react/no-unknown-property": [
+        "error",
+        {
+          ignore: [
+            "intensity",
+            "castShadow",
+            "receiveShadow",
+            "position",
+            "fov",
+            "geometry",
+            "material",
+            "material-roughness",
+            "dispose",
+          ],
+        },
+      ],
       "react-refresh/only-export-components": [
         "warn",
         { allowConstantExport: true },
