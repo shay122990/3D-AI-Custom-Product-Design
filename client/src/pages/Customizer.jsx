@@ -3,7 +3,7 @@ import { useSnapshot } from "valtio";
 import { AnimatePresence, motion } from "framer-motion";
 import config from "../config/config";
 import state from "../store";
-import { download } from "../assets";
+import { download, logoShirt } from "../assets";
 import { downloadCanvasToImage, reader } from "../config/helpers";
 import { EditorTabs, FilterTabs, DecalTypes } from "../config/constants";
 import { fadeAnimation, slideAnimation } from "../config/motion";
@@ -17,6 +17,27 @@ import {
 
 const Customizer = () => {
   const snap = useSnapshot(state);
+  const [file, setFile] = useState("");
+  const [prompt, setPrompt] = useState("");
+  const [generatingImg, setGeneratingImg] = useState(false);
+  const [activeEditorTab, setActiveEditorTab] = useState("");
+  const [activeFilterTab, setActiveFilterTab] = useState({
+    logoShirt: true,
+    stylishShirt: false,
+  });
+
+  const generateTabContent = () => {
+    switch (activeEditorTab) {
+      case "colorPicker":
+        return <ColorPicker />;
+      case "filePicker":
+        return <FilePicker />;
+      case "aipicker":
+        return <AIPicker />;
+      default:
+        return null;
+    }
+  };
   return (
     <AnimatePresence>
       {!snap.intro && (
@@ -31,6 +52,7 @@ const Customizer = () => {
                 {EditorTabs.map((tab) => (
                   <Tab key={tab.name} tab={tab} handleClick={() => {}} />
                 ))}
+                {generateTabContent()}
               </div>
             </div>
           </motion.div>

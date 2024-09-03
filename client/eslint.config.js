@@ -48,6 +48,7 @@ export default [
           ],
         },
       ],
+      "react/no-unescaped-entities": ["error", { forbid: [">", "}"] }],
       "react-refresh/only-export-components": [
         "warn",
         { allowConstantExport: true },
