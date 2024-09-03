@@ -1,43 +1,74 @@
-import { useState, useEffect } from "react";
-import { useSnapshot } from "valtio";
+import React, { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useSnapshot } from "valtio";
+
 import config from "../config/config";
 import state from "../store";
-import { download, logoShirt } from "../assets";
+import { download } from "../assets";
 import { downloadCanvasToImage, reader } from "../config/helpers";
 import { EditorTabs, FilterTabs, DecalTypes } from "../config/constants";
 import { fadeAnimation, slideAnimation } from "../config/motion";
 import {
   AIPicker,
-  FilePicker,
-  CustomButton,
   ColorPicker,
+  CustomButton,
+  FilePicker,
   Tab,
 } from "../components";
 
 const Customizer = () => {
   const snap = useSnapshot(state);
+
   const [file, setFile] = useState("");
+
   const [prompt, setPrompt] = useState("");
   const [generatingImg, setGeneratingImg] = useState(false);
+
   const [activeEditorTab, setActiveEditorTab] = useState("");
   const [activeFilterTab, setActiveFilterTab] = useState({
     logoShirt: true,
     stylishShirt: false,
   });
 
+  // show tab content depending on the activeTab
   const generateTabContent = () => {
     switch (activeEditorTab) {
-      case "colorPicker":
+      case "colorpicker":
         return <ColorPicker />;
-      case "filePicker":
+      case "filepicker":
         return <FilePicker />;
       case "aipicker":
         return <AIPicker />;
+
       default:
         return null;
     }
   };
+
+  const handleActiveFilterTab = (tabName) => {
+    switch (tabName) {
+      case "logoShirt":
+        state.isLogoTexture = !activeFilterTab[tabName];
+        break;
+      case "stylishShirt":
+        state.isFullTexture = !activeFilterTab[tabName];
+        break;
+      default:
+        state.isLogoTexture = true;
+        state.isFullTexture = false;
+        break;
+    }
+
+    // after setting the state, activeFilterTab is updated
+
+    setActiveFilterTab((prevState) => {
+      return {
+        ...prevState,
+        [tabName]: !prevState[tabName],
+      };
+    });
+  };
+
   return (
     <AnimatePresence>
       {!snap.intro && (
@@ -50,8 +81,13 @@ const Customizer = () => {
             <div className="flex items-center min-h-screen">
               <div className="editortabs-container tabs">
                 {EditorTabs.map((tab) => (
-                  <Tab key={tab.name} tab={tab} handleClick={() => {}} />
+                  <Tab
+                    key={tab.name}
+                    tab={tab}
+                    handleClick={() => setActiveEditorTab(tab.name)}
+                  />
                 ))}
+
                 {generateTabContent()}
               </div>
             </div>
@@ -68,6 +104,7 @@ const Customizer = () => {
               customStyles="w-fit px-4 py-2.5 font-bold text-sm"
             />
           </motion.div>
+
           <motion.div
             className="filtertabs-container"
             {...slideAnimation("up")}
@@ -77,8 +114,8 @@ const Customizer = () => {
                 key={tab.name}
                 tab={tab}
                 isFilterTab
-                isActiveTab=""
-                handleClick={() => {}}
+                isActiveTab={activeFilterTab[tab.name]}
+                handleClick={() => handleActiveFilterTab(tab.name)}
               />
             ))}
           </motion.div>
