@@ -46,24 +46,42 @@ const Customizer = () => {
             handleSubmit={handleSubmit}
           />
         );
-
       default:
         return null;
     }
   };
 
-  const handleSubmit = async (type, result) => {
+  const handleSubmit = async (type) => {
     if (!prompt) return alert("Please enter a prompt");
+
     try {
-      //call backed to genrate ai image
+      setGeneratingImg(true);
+
+      const response = await fetch("http://localhost:8080/api/v1/dalle", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          prompt,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.photo) {
+        handleDecals(type, `data:image/png;base64,${data.photo}`);
+      } else {
+        throw new Error("No photo data returned from server.");
+      }
     } catch (error) {
-      console.error("Failed to generate AI image", error);
-      alert("Failed to generate AI image");
+      alert(error.message);
     } finally {
       setGeneratingImg(false);
-      setActiveFilterTab("");
+      setActiveEditorTab("");
     }
   };
+
   const handleDecals = (type, result) => {
     const decalType = DecalTypes[type];
 
@@ -72,12 +90,6 @@ const Customizer = () => {
     if (!activeFilterTab[decalType.filterTab]) {
       handleActiveFilterTab(decalType.filterTab);
     }
-  };
-  const readFile = (type) => {
-    reader(file).then((result) => {
-      handleDecals(type, result);
-      setActiveEditorTab("");
-    });
   };
 
   const handleActiveFilterTab = (tabName) => {
@@ -101,6 +113,13 @@ const Customizer = () => {
         ...prevState,
         [tabName]: !prevState[tabName],
       };
+    });
+  };
+
+  const readFile = (type) => {
+    reader(file).then((result) => {
+      handleDecals(type, result);
+      setActiveEditorTab("");
     });
   };
 
