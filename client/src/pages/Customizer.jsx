@@ -51,6 +51,37 @@ const Customizer = () => {
     }
   };
 
+  // const handleSubmit = async (type) => {
+  //   if (!prompt) return alert("Please enter a prompt");
+
+  //   try {
+  //     setGeneratingImg(true);
+
+  //     const response = await fetch("http://localhost:8080/api/v1/dalle", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         prompt,
+  //       }),
+  //     });
+
+  //     const data = await response.json();
+
+  //     if (data.photo) {
+  //       handleDecals(type, `data:image/png;base64,${data.photo}`);
+  //     } else {
+  //       throw new Error("No photo data returned from server.");
+  //     }
+  //   } catch (error) {
+  //     alert(error.message);
+  //   } finally {
+  //     setGeneratingImg(false);
+  //     setActiveEditorTab("");
+  //   }
+  // };
+
   const handleSubmit = async (type) => {
     if (!prompt) return alert("Please enter a prompt");
 
@@ -62,20 +93,18 @@ const Customizer = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          prompt,
-        }),
+        body: JSON.stringify({ prompt }),
       });
 
       const data = await response.json();
 
-      if (data.photo) {
+      if (response.ok && data.photo) {
         handleDecals(type, `data:image/png;base64,${data.photo}`);
       } else {
-        throw new Error("No photo data returned from server.");
+        alert("No photo returned from the server");
       }
     } catch (error) {
-      alert(error.message);
+      alert("Error generating image: " + error.message);
     } finally {
       setGeneratingImg(false);
       setActiveEditorTab("");
