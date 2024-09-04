@@ -38,10 +38,30 @@ const Customizer = () => {
       case "filepicker":
         return <FilePicker file={file} setFile={setFile} readFile={readFile} />;
       case "aipicker":
-        return <AIPicker />;
+        return (
+          <AIPicker
+            prompt={prompt}
+            setPrompt={setPrompt}
+            generatingImg={generatingImg}
+            handleSubmit={handleSubmit}
+          />
+        );
 
       default:
         return null;
+    }
+  };
+
+  const handleSubmit = async (type, result) => {
+    if (!prompt) return alert("Please enter a prompt");
+    try {
+      //call backed to genrate ai image
+    } catch (error) {
+      console.error("Failed to generate AI image", error);
+      alert("Failed to generate AI image");
+    } finally {
+      setGeneratingImg(false);
+      setActiveFilterTab("");
     }
   };
   const handleDecals = (type, result) => {
