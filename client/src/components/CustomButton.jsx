@@ -3,6 +3,7 @@ import { useSnapshot } from "valtio";
 
 import state from "../store";
 import { getContrastingColor } from "../config/helpers";
+import { color } from "framer-motion";
 
 const CustomButton = ({ type, title, customStyles, handleClick }) => {
   const snap = useSnapshot(state);
@@ -18,6 +19,14 @@ const CustomButton = ({ type, title, customStyles, handleClick }) => {
         borderWidth: "1px",
         borderColor: snap.color,
         color: snap.color,
+      };
+    } else if (type === "basic") {
+      return {
+        backgroundColor: "#424242",
+        borderColor: "#84cc16",
+        color: "#FFF5E4",
+        borderWidth: "1px",
+        borderStyle: "solid",
       };
     }
   };
